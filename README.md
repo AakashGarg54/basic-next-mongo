@@ -1,1 +1,1 @@
-# basic-next-mango
+# Basic-Next-Mango
