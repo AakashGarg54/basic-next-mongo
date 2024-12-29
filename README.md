@@ -63,3 +63,10 @@
        - This will help us in complex applications in which we requires 100s and 1000s of page and creating each one will be impossible
        - The URL will be localhost:3000/products/1 or localhost:3000/products/100. It will work with infine value
        - The page.tsx should be inside app/products/[productsDetails] directory. '[]' help us to make the dynamic routing possible with the defined product id.
+
+
+
+
+- [x] Write the press release
+- [ ] Update the website
+- [ ] Contact the media
