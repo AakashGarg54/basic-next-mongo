@@ -128,17 +128,17 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 
            ```javascript
            export default function docs({ params }) {
-              return (
-              <>
+             return (
+               <>
                  <p>
-                    Feature ID: params.slug[0] // For feature1
-                    <BR>
-                    Concept ID: params.slug[1] // For concept1
-                    <BR>
-                    Example ID: params.slug[2] // For example1
+                   Feature ID: params.slug[0] // For feature1
+                   <br />
+                   Concept ID: params.slug[1] // For concept1
+                   <br />
+                   Example ID: params.slug[2] // For example1
                  </p>
-              </>
-              );
+               </>
+             );
            }
            ```
 
@@ -328,7 +328,12 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 
 - It is a file where we can add loading animations to make the user understand the loading is happening and the requested content will be loaded soon
 - We need a exported default `Loading()` function in `Loading.tsx`.
-- The file should placed with the `page.tsx` file. So that it will wrap the content of the `loading.tsx` at the top of `page.tsx`.  
+- The file should placed with the `page.tsx` file. So that it will wrap the content of the `loading.tsx` at the top of `page.tsx`. Demo example:
+  ```javascript
+  export default function Loading() {
+    return <h1>Loading...</h1>;
+  }
+  ```
 
 9. **_MetaData_** : [title, description]
 
@@ -386,4 +391,55 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
   };
   ```
 
-9.
+10. **_Error Function:_**
+
+- This a type of function/feature that helps us in handling errors.
+- It will mostly helps in production environments.
+- This will make the user experience effective.
+- This will helps to display the error message more effectively and make the application to not to crash only with some small errors
+- It will also make the user to interact with our parts of the application.
+- In order to catch errors from the application, we use a `throw new Error` method in the `page.tsx` file and create a new file with name `error.tsx` along with the page.tsx file. Demo example:
+
+  ```javascript
+  //code snippet for page.tsx
+
+  if (num === 1) {
+    throw new Error("Enter a valid number");
+  }
+  ```
+
+  - This is make the application crash immediately if the value of num is equal to 1 and the user is unble to interact with other parts of application.
+
+  ```javascript
+  // code snippet for error.tsx
+  "use client";
+
+  export default function error() {
+    return <div>Something went wrong</div>;
+  }
+  ```
+
+  - This will only display "something went wrong" in the repecetive component and other components will work as expected.
+  - It is only available in client components.
+
+- The above example wil display the error message "something went wrong" which is hardcoded in the `error.tsx` file. However, if you want to display the message defined in the `page.tsx` file for that we can use a `error.message` prop in the `error.tsx` file. Demo example:
+
+  - Code snippet for page.tsx:
+
+    ```javascript
+    if (num === 1) {
+      throw new Error("Enter a valid number");
+    }
+    ```
+
+  - Code snippet for error.tsx:
+
+    ```javascript
+    "use client";
+
+    export default function error({ error }: { error: Error }) {
+      return <div>{error.message}</div>;
+    }
+    ```
+    - This will display the error message "Enter a valid number".
+
