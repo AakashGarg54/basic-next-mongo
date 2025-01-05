@@ -42,10 +42,8 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 
 - All the file must be placed inside the app directory.
 - The file name should be page.tsx in order to be recognized as routing page.
-- In order to create a private folder inside the app directory and should be ignored by the routing, we can simply add `_` before the folder name. Such as `_lib`
-- In order to create a routing group, we simply add the folder name inside. `()` . Such as `(auth)` and that will convert the path from `auth/register` -> `/register`
 
-6. Various Saniors:
+6. Various Saniors with routing functions:
 
    1. To case a no page (/)
 
@@ -83,15 +81,15 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 
         ```typescript
         export default function products({ params }) {
-           return (
-           <>
+          return (
+            <>
               <p>
-                 Review ID: params.reviewById
-                 <BR>
-                 Product ID: params.productsDetailsById
+                Review ID: {params.reviewById}
+                <br />
+                Product ID: {params.productsDetailsById}
               </p>
-           </>
-           );
+            </>
+          );
         }
         ```
 
@@ -110,16 +108,19 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
         1. Below is example of `/docs/feature1/Concept1` :
 
            ```typescript
-           export default function docs({ params }) {
-              return (
-              <>
+           export default function docs({
+             params,
+           }: {
+             params: { slug: string[] };
+           }) {
+             return (
+               <>
                  <p>
-                    Feature ID: params.slug[0]
-                    <BR>
-                    Concept ID: params.slug[1]
+                   Feature ID: {params.slug[0]}
+                   Concept ID: {params.slug[1]}
                  </p>
-              </>
-              );
+               </>
+             );
            }
            ```
 
@@ -151,28 +152,37 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
       - In order to achieve the above scenario, we simply have to create a if-else statement with the condition `params.productById > 30` then implement a bulidin function `notFound();`. For example:
 
         ```javascript
-        import {notFound} from "next/navigation/";
+        import { notFound } from "next/navigation";
 
-        export default function docs({ params }) {
-           if (params.productById > 30) {
-              notFound();
-           }
-              return (
-              <>
-                 <p>
-                    Feature ID: params.slug[0]
-                    <BR>
-                    Concept ID: params.slug[1]
-                 </p>
-              </>
-              );
-           }
+        export default function reviews({ params }: any) {
+          if (params.reviewById > 30) {
+            notFound();
+          }
+
+          return (
+            <>
+              <p> Review ID: {params.reviewById} </p>
+              <p>Product ID: {params.productsDetailsById}</p>
+            </>
+          );
+        }
         ```
 
       - The above code will automatically goes to 404 error page if the params is more than 30. Such as `/products/31`.
-      - If we need to customize the 404 page for the product page, then we have to create a `not-found.tsx` inside the `app/products` directory otherwise it will take custom 404 error page defined in `app` directory.
+      - If we need to customize the 404 page for the product page, then we have to create a `not-found.tsx` inside the `app/products` directory otherwise it will take custom 404 error page defined in `app` directory. demonstrating:
 
-7. **_Linking_**:
+        ```javascript
+        export default function notFound() {
+          return <div>hya unble to find the requested item</div>;
+        }
+        ```
+
+7. Routing Conventions: [CONTI.]
+
+- In order to create a private folder inside the app directory and should be ignored by the routing, we can simply add `_` before the folder name. Such as `_lib`
+- In order to create a routing group, we simply add the folder name inside. `()` . Such as `(auth)` and that will convert the path from `auth/register` -> `/register`
+
+8. **_Linking_**:
 
 - We have to use `Link` component which should be imported from `next/link` in order to link one component to another which enables client side navigation to the different pages. Demo:
 
@@ -202,23 +212,25 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 - <mark>**_usePathname function_:**</mark> It is the function used to determine the current pathname of the url. Example: For `/blog`, the value of pathname function will be `/blog`. Syntax:
 
   ```javascript
+  "use client";
   import { usePathname } from "next/navigation";
 
   const path = usePathname();
   ```
 
-  **Note:** UsePathname function is only available in clint components.
+  **Note:** UsePathname function is only available in client components.
 
 - <mark>**_useRouter function_:**</mark> It is the function used to navigate the rotuer from one page to another and many more. Syntax:
 
   ```javascript
+  "use client";
   import { useRouter } from "next/navigation";
 
   const router = useRouter();
   router.push("/");
   ```
 
-  **Note:** UsePathname function is only available in clint components.
+  **Note:** UsePathname function is only available in client components.
 
 8. **Layout**:
 
@@ -263,10 +275,11 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
   // pwd will be app/(auth)/(authCustomLayout)/layout.tsx
   export default function authCustomLayout({ children }) {
     return (
-          <header>Custom Header for auth route group components</header>
+          <header>
+          Custom Header for auth route group components
+          </header>
           {children}
-        </body>
-    );
+    )
   }
   ```
 
@@ -300,13 +313,30 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
   }
   ```
 
-8. **_MetaData_** : [title, description]
+- Layouts only render the unshared components i.e. `(children) and other shared components will remain as it they are not going to be rendered. It will keep all the common elements untouched and only load the newly loaded components.
+
+- <mark>**_Templpates_**</mark>
+
+  - Since, Layouts only render the unshared components and not the shared components or common elements, here `Templates` will come into play. It will render all the components and elements weather it is shared components or common elements.
+  - Similar to layouts, templates also require a `(children)` props to render the newly adde components.
+  - When a user navigats between routes that shared templates, a new instance of templates will be mounted, all new DOM elements will be created and states are not getting preserved.
+  - Templates is defined as a export react default component from the file with the name of `template.tsx or template.js`
+
+- We can use both `template.tsx` and `layout.tsx` together but keep in mind that `Layout.tsx` will render first.
+
+8. **_Loading_**:
+
+- It is a file where we can add loading animations to make the user understand the loading is happening and the requested content will be loaded soon
+- We need a exported default `Loading()` function in `Loading.tsx`.
+- The file should placed with the `page.tsx` file. So that it will wrap the content of the `loading.tsx` at the top of `page.tsx`.  
+
+9. **_MetaData_** : [title, description]
 
 - Nextjs allows a metadata API to configure the metadata object in order to ensuring the visibility of the data in SEOs
 - We can add the metadata in the `page.tsx` file with the following code:
 
   ```javascript
-  //Here metadata is a object
+  //Here, metadata is a object
 
   export const metadata = {
     title: "Custom title", // this will give a custom title
@@ -316,8 +346,10 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 - It can be done on root level or different components level using the above code.
 - It ensures the accuracy and relvent information transfer to the SEOs and ultimatly to the users.
 - Configure the metadata:
+
   - Both the `Layout.tsx` and `page.tsx` file can have the metadata API configured. If the metadata is configured in the `Layout.tsx` file, it will be available for all the components. If it is configured in the `page.tsx` file, it will be only avaible for the specfic pages.
   - The metadata API is read in order from final level >>> root level. Such as metadata defined in `layout.tsx` in root will be taken over by the metadata defined in a specific components level.
+
 - **_Dynamic MetaData_** : We can also use dynamic metadata in our components by simply importing the `Metadata` function from the `next` lib and defining it to a function with name `generateMetadata`. Demo:
 
   ```javascript
@@ -353,3 +385,5 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
     };
   };
   ```
+
+9.
