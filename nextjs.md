@@ -269,7 +269,7 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 
 - **_Nested Layouts:_** We can create a layout for a specific component/pages as well. As above mentioned, the `Children` will be replaced by all data coming from the `page.tsx` file. We can add other tags as per our requirements.
 
-- **_Route Group Layout:_** We can create a route group layout for a specific `component/pages`. Just simply create a route group folder and add the components there with a `layout.tsx` file and same as above, `(children)` will be replaced by the contents from components. Such as:
+- **_Route Group Layout:_** We can create a route group layout for a specific `component/pages`. Just simply create a route group folder and add the components there with a `layout.tsx` file and same as above, `{children}` will be replaced by the contents from components. Such as:
 
   ```javascript
   // pwd will be app/(auth)/(authCustomLayout)/layout.tsx
@@ -299,7 +299,6 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
   export default function authCustomLayout({ children }: any) {
     return (
       <div>
-        {" "}
         {navLinks.map((link) => {
           return (
             <Link href={link.href} key={link.name}>
@@ -313,12 +312,12 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
   }
   ```
 
-- Layouts only render the unshared components i.e. `(children) and other shared components will remain as it they are not going to be rendered. It will keep all the common elements untouched and only load the newly loaded components.
+- Layouts only render the unshared components i.e. `{children}` and other shared components will remain as it they are not going to be rendered. It will keep all the common elements untouched and only load the newly loaded components.
 
 - <mark>**_Templpates_**</mark>
 
   - Since, Layouts only render the unshared components and not the shared components or common elements, here `Templates` will come into play. It will render all the components and elements weather it is shared components or common elements.
-  - Similar to layouts, templates also require a `(children)` props to render the newly adde components.
+  - Similar to layouts, templates also require a `{children}` props to render the newly adde components.
   - When a user navigats between routes that shared templates, a new instance of templates will be mounted, all new DOM elements will be created and states are not getting preserved.
   - Templates is defined as a export react default component from the file with the name of `template.tsx or template.js`
 
@@ -335,7 +334,7 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
   }
   ```
 
-9. **_MetaData_** : [title, description]
+9. <mark>**_MetaData_**</mark> : [title, description]
 
 - Nextjs allows a metadata API to configure the metadata object in order to ensuring the visibility of the data in SEOs
 - We can add the metadata in the `page.tsx` file with the following code:
@@ -391,11 +390,33 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
   };
   ```
 
-10. **_Error Function:_**
+10. <mark> Error Function:</mark>
 
 - This a type of function/feature that helps us in handling errors.
 - It will mostly helps in production environments.
 - This will make the user experience effective.
+- Here is the component hierarchy: <mark>**_IMPORTANT_**</mark>
+
+  ```js
+  <Layout>
+    {" "}
+    //Layout.tsx
+    <Template>
+      //template.tsx
+      <ErrorBoundary fallback={<Error />}>
+        // Error.tsx
+        <Suspense fallback={<Loading />}>
+          // Loading.tsx
+          <ErrorBoundary fallback={<notFound />}>
+            // not-Found.tsx
+            <page /> // Page.tsx
+          </ErrorBoundary>
+        </Suspense>
+      </ErrorBoundary>
+    </Template>
+  </Layout>
+  ```
+
 - This will helps to display the error message more effectively and make the application to not to crash only with some small errors
 - It will also make the user to interact with our parts of the application.
 - In order to catch errors from the application, we use a `throw new Error` method in the `page.tsx` file and create a new file with name `error.tsx` along with the page.tsx file. Demo example:
@@ -441,5 +462,79 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
       return <div>{error.message}</div>;
     }
     ```
+
     - This will display the error message "Enter a valid number".
 
+- <mark>**_Reset Function_**</mark>
+
+  - This function is used to reset the current state of the component/error.
+  - This will re-render the error boundaries to remove the error message.
+  - This will not remove the error in the component but re-render the page.
+  - This is actually useful for resending API calls and getting the data again.
+  - **Note:** Since, the reset is a function. Therefore, to run the reset function we require a button DOM element. Demo example:
+
+    - Code snippet for page.tsx:
+
+      ```javascript
+      "use client";
+
+      if (num === 1) {
+        throw new Error("Enter a valid number");
+      }
+      ```
+
+      - No chnage in `page.tsx` file. Just add a `"use client"` attribute to make the `page.tsx` a client component.
+
+    - Code snippet for error.tsx:
+
+      ```javascript
+      "use client";
+
+      export default function error({
+        error,
+        reset,
+      }: {
+        error: Error,
+        reset: () => void,
+      }) {
+        return (
+          <>
+            <div>{error.message}</div>;
+            <button onClick={reset}> Try Again </button>
+          </>
+        );
+      }
+      ```
+
+      - This will trigger the reset function and try to re-render the error boundaries to make the component working properly
+      - Reset function is only available for client components.
+
+- **_Nested error handler:_**
+
+  - An `error.tsx` file will handle the error in all its nested child components.
+  - It is basically set the scope of the error handler to understand to determine which parts of the UI needs to be affected if the error occurs
+  - If we move the `error.tsx` file into products component, it will be automatically set the scope of the error handler to the complete products component irrespective of the error being thrown in review component. It will re-render the complete products component instead of the review component.
+
+    and If we move the `error.tsx` file into review component, it will be automatically set the scope of the error handler to the review component and only review component will re-render other components such as features will be remain visible in the UI and in working state.
+
+11. <mark>Parallel Routes:</mark>
+
+- This is a advanced routing with help to render multiple pages within the same layout.
+- This is used when we need two or more components to be rendered in a single page and to make sure that the components are being rendered individually without any dependencies on other components. For example:
+
+  | Header     | Header     |
+  |------------|------------|
+  | User       | Data       |
+  | Customer   | Data       |
+  | Footer     | Footer     |
+
+- With this type of setup, we can render components without any dependencies on other components. This is useful when one or more components are taking time to render or gets an error. This setup will render the available components and show errors in scope of the component.
+- In Nextjs, Parallel Routes are defined using a feature known as **Slots.**
+- `Slots` is a feature that allows you to structure our components/content in a Modular function i.e. multiple pages within the same layout. 
+- To define `Slots`, we use `"@componentName"`. For example: 
+  1. `app/dashboard/@User`
+  2. `app/dashboard/@Customer`
+  3. `app/dashboard/@Data`
+- All the `Slots` must have their own `page.tsx` file in order to render the component on the `Layout.tsx` file.
+- Each component then passed as a prop (same as `{children}`) in `Layout.tsx` within the parent component. For example: _dashboard_. 
+- 
