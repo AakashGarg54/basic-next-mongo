@@ -348,7 +348,7 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
   ```
 
 - It can be done on root level or different components level using the above code.
-- It ensures the accuracy and relvent information transfer to the SEOs and ultimatly to the users.
+- It ensures the accuracy and relvent information transfer to the SEOs and ultimatly to the user.
 - Configure the metadata:
 
   - Both the `Layout.tsx` and `page.tsx` file can have the metadata API configured. If the metadata is configured in the `Layout.tsx` file, it will be available for all the components. If it is configured in the `page.tsx` file, it will be only avaible for the specfic pages.
@@ -390,7 +390,7 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
   };
   ```
 
-10. <mark> Error Function:</mark>
+10. <mark>**_Error Function:_**</mark>
 
 - This a type of function/feature that helps us in handling errors.
 - It will mostly helps in production environments.
@@ -517,24 +517,184 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 
     and If we move the `error.tsx` file into review component, it will be automatically set the scope of the error handler to the review component and only review component will re-render other components such as features will be remain visible in the UI and in working state.
 
-11. <mark>Parallel Routes:</mark>
+11. <mark>**_Parallel Routes:_**</mark> (**_Advance Routing Concepts_**)
 
 - This is a advanced routing with help to render multiple pages within the same layout.
 - This is used when we need two or more components to be rendered in a single page and to make sure that the components are being rendered individually without any dependencies on other components. For example:
 
-  | Header     | Header     |
-  |------------|------------|
-  | User       | Data       |
-  | Customer   | Data       |
-  | Footer     | Footer     |
+  | Header   | Header |
+  | -------- | ------ |
+  | User     | Data   |
+  | Customer | Data   |
+  | Footer   | Footer |
 
 - With this type of setup, we can render components without any dependencies on other components. This is useful when one or more components are taking time to render or gets an error. This setup will render the available components and show errors in scope of the component.
 - In Nextjs, Parallel Routes are defined using a feature known as **Slots.**
-- `Slots` is a feature that allows you to structure our components/content in a Modular function i.e. multiple pages within the same layout. 
-- To define `Slots`, we use `"@componentName"`. For example: 
+- `Slots` is a feature that allows you to structure our components/content in a Modular function i.e. multiple pages within the same layout.
+- Using `Slots` won't affect anything on URL part. Such as `localhost:3000/dashboard/User` or `localhost:3000/dashboard/@User` shows 404 error instead of rendering the page.tsx file.
+- To define `Slots`, we use `"@componentName"`. For example:
   1. `app/dashboard/@User`
   2. `app/dashboard/@Customer`
   3. `app/dashboard/@Data`
 - All the `Slots` must have their own `page.tsx` file in order to render the component on the `Layout.tsx` file.
-- Each component then passed as a prop (same as `{children}`) in `Layout.tsx` within the parent component. For example: _dashboard_. 
-- 
+- Each component then passed as a prop (same as `{children}`) in `Layout.tsx` within the parent component. For example: _dashboard_. Demo:
+
+  - Code Snippet for Dashboard Component (`Layout.tsx`):
+
+    ```javascript
+    export default function Dashboard({
+      children,
+      user,
+      customer,
+      data,
+    }: {
+      children: React.ReactNode,
+      user: React.ReactNode,
+      customer: React.ReactNode,
+      data: React.Children,
+    }) {
+      return (
+        <>
+          <div>{children}</div>
+          <div>{user}</div>
+          <div>{customer}</div>
+          <div>{data}</div>
+        </>
+      );
+    }
+    ```
+
+  - Code Snippet for Other Component:
+
+    ```javascript
+    export default function componentName() {
+      return <div>componentName</div>;
+    }
+    ```
+
+- <mark>**_Sub-navigation_**</mark> or <mark>**_Unmatched Routes:_**</mark>
+
+  - In case, we want to navigate using parallel routes, we can use Sub-navigation
+  - In this way, the layout of other compoent will be as it is and effects only one component. For example:
+
+    - Before using the Sub-navigation:
+
+      | Header   | Header               |
+      | -------- | -------------------- |
+      | User     | Data                 |
+      | Customer | [Go to sharedData]() |
+      | Footer   | Footer               |
+
+    - After using the Sub-navigation:
+
+      | Header   | Header           |
+      | -------- | ---------------- |
+      | User     | Shared Data      |
+      | Customer | [Back to Data]() |
+      | Footer   | Footer           |
+
+      - _Shared Data_ is a different component which is rendered in the same layout as _User_ and _Customer_ and will replace `data` prop.
+      - In the above example, we are using sub-navigation to navigate from `Data` to `Shared Data` component and visa-versa.
+
+  - This is more likely to render a children component within the parent component and navigating it at the same time.
+  - The URL for the same will be changed from `localhost:3000/dashboard` to `localhost:3000/dashboard/shared-data` but it will not reload the page . It will only change the component i.e. data component.
+  - Code Snippet for this type of configuration:
+
+    - Code Snippet for Shared-data Component i.e. `app/dashboard/@data/page.tsx`:
+
+      ```javascript
+      import Link from "next/link";
+
+      export default function Data() {
+        return (
+          <>
+            <h1>Data</h1>
+            <Link href="/dashboard/shared-data">Go to sharedData</Link>
+          </>
+        );
+      }
+      ```
+
+    - Code Snippet for Shared-data Component i.e. `app/dashboard/@data/shared-data/page.tsx`:
+
+      ```javascript
+      import Link from "next/link";
+
+      export default function sharedData() {
+        return (
+          <>
+            <h1>Shared Data</h1>
+            <Link href="/dashboard">Back to data</Link>
+          </>
+        );
+      }
+      ```
+
+  - Here is a <span style="color: red;">**CAUTION**</span> in the above approach. If we navigate the sub-navigation using the URL i.e. `localhost:3000/dashboard/shared-data`, it will show _404_. As there is no `page.tsx` at `app/dashboard/shared-data`.
+  - <mark>**_Default.tsx:_**</mark> In order to make the navigation works, we use `Default.tsx` file defined in every component to let the navigator know that we have to render the default content in case of a unmatched routes.
+  - With this approach, It retain the previously active state in the UI regreadless of changes in URL.
+  - As soon as, the browser hits the unmatched route, NextJS immediately searches for `Default.tsx` file.
+  - The presence of `Default.tsx` file is madatory because it will provides the default content to be rendered in UI components.
+  - In the above example, we have four slots i.e. children, user, customer and data, and in order make the unmatchable route works we have to add `Default.tsx` file in all the slots corresponding to `Page.tsx` file.
+  - The code for the `Default.tsx` can be same as the code for `Page.tsx` file or it can be modified or totally different one as needed.
+
+- <mark>**_Conditional Routes:_**</mark>
+  - Conditional routes are used to render different components based on the condition.
+  - It is useful when we have to render different components based on the user authentication.
+  - Code snippet for `page.tsx` file with the filepath:
+    ```javascript
+    export default function Dashboard({
+      children,
+      user,
+      customer,
+      data,
+      Login,
+    }: {
+      children: React.ReactNode,
+      user: React.ReactNode,
+      customer: React.ReactNode,
+      data: React.Children,
+      Login: React.Children,
+    }) {
+      const isLoggedIn = true; // This can be replaced with actual authentication logic
+      return isLoggedIn ? (
+        <>
+          <div>{children}</div>
+          <div>{user}</div>
+          <div>{customer}</div>
+          <div>{data}</div>
+        </>
+      ) : (
+        <h1> Please logged in to continue ... </h1>
+      );
+    }
+    ```
+
+12. <mark>**_Intercepting Routes_**</mark> (**_Advance Routing Concepts_**)
+
+- Intercepting routes are used to perform some action before rendering the component.
+- It helps in intercept or stop the default routing behavior and present a alternate UI to make the UI interactive while the URL will be the same but the UI will changed. But the twist is when the user reload the page the default behavior and UI will be replaced with the Interactive Behavior.
+- This can useful if you want to show a route while keeping the context of current page.
+- For example:
+
+  1. Once clicked on a Login button, the user will be redirected to the login page by default that contains a form for authorization. However, using `Intercepting routes`, we can make the navigation as it is but the instead of the redirection of the page, we can make a model for the login page and the background of the home page will be the same.
+
+  2. We can implement it in the gallery section. Such as while clicking on the photo, the url will be changed and by default, the website will redirect and the photo will be enlarged. However, using `Intercepting routes`, we can make the navigation as it is but the instead of the rediection of the page, we can make a model to enlarge the photo and the background of the gallery page will be the same.
+
+- Name convention for implementing intercepting routes:
+
+  1. <mark>(.)</mark>directoryName: (`app/f1/f2/page.tsx` &rarr; `app/f1/(.)f2/page.tsx`)
+
+     - This is used to intercept the routes at the same level.
+     - We have to create a new directory at the same level of route as where the intercepting the routes.
+     - For example:
+       1. If we are intercepting this `localhost:3000/f1/f2` route.
+       2. The filepath for the above route will be `app/f1/f2/page.tsx`
+       3. In order to intercept this route, we have to create a new directory at the same level of route as where the intercepting the routes i.e. `app/f1/(.)f2/page.tsx`.
+       4. Providing a link to the `f1/page.tsx` file to navigate to the `f2/page.tsx` file
+       5. After clicking the Link added in the `f1/page.tsx` file, the application will navigate to the `localhost:3000/f1/f2` route, it will render the intercepted route and render the contents mentioned in `app/f1/(.)f2/page.tsx`
+       6. Finally, if we reload the page `localhost:3000/f1/f2`, it will render the content mentioned in `app/f1/f2/page.tsx`
+     - There is no additional code required to handle intercepting routes
+
+  2. <mark>(..)</mark>directoryName: (`app/f1/f4/page.tsx` &rarr; `app/f4/(..)f3/page.tsx`)
+  
