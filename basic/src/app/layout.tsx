@@ -5,7 +5,6 @@ export default function RootLayout({ children }: any) {
         <html lang="en">
             <body>
                 <h1>Root Layout</h1>
-
                 {children}
                 <h2>Layout</h2>
             </body>
