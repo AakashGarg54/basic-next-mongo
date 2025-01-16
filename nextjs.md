@@ -1,5 +1,7 @@
 Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvwjOKd6gdf4QtV1uYNiQnruI&index=23&ab_channel=Codevolution "Visit Youtube")
 
+CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overlays/modal-dialogs)
+
 # Next js:
 
 ## Mongoose :
@@ -15,10 +17,10 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 ## Basics:
 
 1. Create a project using
-   -> `npx create-next-app@latest`
+   &rarr; `npx create-next-app@latest`
 
-2. `npm run dev` -> development mode \
-   `npm run start` -> production mode
+2. `npm run dev` &rarr; development mode \
+   `npm run start` &rarr; production mode
 
 3. React Server Components
 
@@ -60,7 +62,7 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
       - The URL will be `localhost:3000/blog/first`
       - The page.tsx should be inside `app/blog/first` directory
 
-   4. To case a dynamic page (/products/1 to /products/100) -> <mark>**_[Dynamic Routing]_**</mark>
+   4. To case a dynamic page (/products/1 to /products/100) &rarr; <mark>**_[Dynamic Routing]_**</mark>
 
       - This will help us in complex applications in which we requires 100s and 1000s of page and creating each one will be impossible
       - The URL will be `localhost:3000/products/1` or `localhost:3000/products/100`. It will work with infine value
@@ -93,7 +95,7 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
         }
         ```
 
-   6. To case a multiple nested dynamic page (/docs/feature1, /docs/feature100/concept1/...(It could anything depending upon the requirements)) -> <mark>**_[Catch-all-segments]_**</mark>
+   6. To case a multiple nested dynamic page (/docs/feature1, /docs/feature100/concept1/...(It could anything depending upon the requirements)) &rarr; <mark>**_[Catch-all-segments]_**</mark>
 
       - In this case, we have multiple dynamics pages. Problem is : this could a lot of different dynamic folders.
       - The URLs will be like:
@@ -144,7 +146,7 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 
       - Basically, The `slug` is an array of string that contains all the parameters from the URL.
 
-   7. To customize Not Found (/anything): <mark>**_[notFound() -> Function]_**</mark>
+   7. To customize Not Found (/anything): <mark>**_[notFound() &rarr; Function]_**</mark>
 
       - The URL will be localhost:3000/anything
       - The page.tsx should be inside app directory with the name `not-found.tsx`
@@ -180,7 +182,7 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 7. Routing Conventions: [CONTI.]
 
 - In order to create a private folder inside the app directory and should be ignored by the routing, we can simply add `_` before the folder name. Such as `_lib`
-- In order to create a routing group, we simply add the folder name inside. `()` . Such as `(auth)` and that will convert the path from `auth/register` -> `/register`
+- In order to create a routing group, we simply add the folder name inside. `()` . Such as `(auth)` and that will convert the path from `auth/register` &rarr; `/register`
 
 8. **_Linking_**:
 
@@ -235,7 +237,7 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 8. **Layout**:
 
 - It is auto generated file in nextjs that help us to set a parmanent section within the website such as header, footer, etc.
-- The filename is `/app/layout.tsx` -> The is root layout of the website.
+- The filename is `/app/layout.tsx` &rarr; The is root layout of the website.
 - We can customize the same as per our requirement.
 - We can also import both of them as react component.
 - Here is a code for the same:
@@ -685,16 +687,52 @@ Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvw
 
   1. <mark>(.)</mark>directoryName: (`app/f1/f2/page.tsx` &rarr; `app/f1/(.)f2/page.tsx`)
 
-     - This is used to intercept the routes at the same level.
+     - This is used to intercept the routes at the **same level**.
      - We have to create a new directory at the same level of route as where the intercepting the routes.
      - For example:
        1. If we are intercepting this `localhost:3000/f1/f2` route.
        2. The filepath for the above route will be `app/f1/f2/page.tsx`
        3. In order to intercept this route, we have to create a new directory at the same level of route as where the intercepting the routes i.e. `app/f1/(.)f2/page.tsx`.
        4. Providing a link to the `f1/page.tsx` file to navigate to the `f2/page.tsx` file
-       5. After clicking the Link added in the `f1/page.tsx` file, the application will navigate to the `localhost:3000/f1/f2` route, it will render the intercepted route and render the contents mentioned in `app/f1/(.)f2/page.tsx`
+       5. After clicking the Link added in the `f1/page.tsx` file, the application will navigate to the `localhost:3000/f1/f2` route, it will render the intercepted route and load the contents mentioned in `app/f1/(.)f2/page.tsx`
        6. Finally, if we reload the page `localhost:3000/f1/f2`, it will render the content mentioned in `app/f1/f2/page.tsx`
      - There is no additional code required to handle intercepting routes
 
-  2. <mark>(..)</mark>directoryName: (`app/f1/f4/page.tsx` &rarr; `app/f4/(..)f3/page.tsx`)
-  
+  2. <mark>(..)</mark>directoryName: (`app/f1/f3/page.tsx` &rarr; `app/f1/f4/(..)f3/page.tsx`)
+
+     - This is used to intercept the routes at the **one level above** i.e. from `f1/f3/page.tsx` to `f4/(..)f3/page.tsx`.
+     - File hierarchy will be like this App &rarr; f1 &rarr; f2, f3, (f4 &rarr; `(..)f3`)
+     - For example:
+       1. If we are intercepting this `localhost:3000/f1/f3` route.
+       2. The filepath for the above route will be `app/f1/f3/page.tsx`
+       3. In order to intercept this route, we have to create a new directory at the one level below of route as where the routes that needs to intercept the routes i.e. `app/f1/f4/(..)f3/page.tsx`.
+       4. Providing a link to the `f1/f4/page.tsx` file to navigate to the `f1/f3/page.tsx` file
+       5. After clicking the Link added in the `f1/f4/page.tsx` file, the application will navigate to the `localhost:3000/f1/f3` route, it will render the intercepted route and load the contents mentioned in `app/f1/f4/(..)f3/page.tsx`
+       6. Finally, if we reload the page `localhost:3000/f1/f3`, it will render the content mentioned in `app/f1/f3/page.tsx`
+     - Therefore, we are interspecting the UI defined in `f1/f4/(..)f3/page.tsx` to `f1/f3/page.tsx`
+     - The nextjs will render/load the contents from `f1/f4/(..)f3/page.tsx` then content from `f1/f3/page.tsx`.
+     - That's why, this is called as one level above.
+     - There is no additional code required to handle intercepting routes.
+
+  3. <mark>(..)(..)</mark> &rarr; <span style="color: red;">**Not working rightnow**</span>
+
+  4. <mark>(...)</mark>directoryName: (`app/about/page.tsx` &rarr; `app/f1/f4/(...)about/page.tsx`)
+
+     - This is used to intercept the routes at the **Root Level** i.e. from `app/about/page.tsx` to `app/f1/f4/(...)about/page.tsx`.
+     - File hierarchy will be like this App &rarr; f1 &rarr; f2, f3, (f4 &rarr; `(...)about`)
+     - For example:
+       1. If we are intercepting this `localhost:3000/about` route.
+       2. The filepath for the above route will be `app/about/page.tsx`
+       3. In order to intercept this route, we have to create a new directory at the bottom root level of route as where the routes that needs to intercept the routes i.e. `app/f1/f4/(...)about/page.tsx`.
+       4. Providing a link to the `f1/f4/page.tsx` file to navigate to the `about/page.tsx` file
+       5. After clicking the Link added in the `f1/f4/page.tsx` file, the application will navigate to the `localhost:3000/about ` route, it will render the intercepted route and load the contents mentioned in `app/f1/f4/(...)about/page.tsx`
+       6. Finally, if we reload the page `localhost:3000/about`, it will render the content mentioned in `app/about/page.tsx`
+     - Therefore, we are interspecting the UI defined in `app/f1/f4/(...)about/page.tsx` to `app/about/page.tsx`
+     - The nextjs will render/load the contents from `app/f1/f4/(...)about/page.tsx` then content from `app/about/page.tsx`.
+     - That's why, this is called as root level.
+     - There is no additional code required to handle intercepting routes.
+
+
+<hr/>
+<span style="font-size:20px;"><strong>Practical Example for Parallel Intercepting Routes Will Be Found in `Gallery` Directory</strong></span>
+<hr/>
