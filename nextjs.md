@@ -11,7 +11,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 - **Document**: A specific instance of a model, which represents an individual record in the collection.
 - **Query**: A way to retrieve, filter, update, or delete documents from the database.
   Middleware: Functions that execute during certain stages of a document's lifecycle (e.g., before saving or after validation).
-- **Virtuals**: Computed properties on a document, not stored in the database.
+- **Virtuals**: Computed properties on a document, not stored in the database.  
   Population: A method for populating fields with documents from other collections.
 
 ## Basics:
