@@ -18,49 +18,49 @@ export type metaDataType = {
 
 const metaData:metaDataType[]=[
     {
-        id: "photo1",
+        id: "1",
         title: "Photo 1",
         description: "Description for photo 1",
         image: photo1,
     },
     {
-        id: "photo2",
+        id: "2",
         title: "Photo 2",
         description: "Description for photo 2",
         image: photo2,
     },
     {
-        id: "photo3",
+        id: "3",
         title: "Photo 3",
         description: "Description for photo 3",
         image: photo3,
     },
     {
-        id: "photo4",
+        id: "4",
         title: "Photo 4",
         description: "Description for photo 4",
         image: photo4,
     },
     {
-        id: "photo5",
+        id: "5",
         title: "Photo 5",
         description: "Description for photo 5",
         image: photo5,
     },
     {
-        id: "photo6",
+        id: "6",
         title: "Photo 6",
         description: "Description for photo 6",
         image: photo6,
     },
     {
-        id: "photo7",
+        id: "7",
         title: "Photo 7",
         description: "Description for photo 7",
         image: photo7,
     },
     {
-        id: "photo8",
+        id: "8",
         title: "Photo 8",
         description: "Description for photo 8",
         image: photo8,
