@@ -11,7 +11,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 - **Document**: A specific instance of a model, which represents an individual record in the collection.
 - **Query**: A way to retrieve, filter, update, or delete documents from the database.
   Middleware: Functions that execute during certain stages of a document's lifecycle (e.g., before saving or after validation).
-- **Virtuals**: Computed properties on a document, not stored in the database.  
+- **Virtuals**: Computed properties on a document, not stored in the database.
   Population: A method for populating fields with documents from other collections.
 
 ## Basics:
@@ -45,146 +45,146 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 - All the file must be placed inside the app directory.
 - The file name should be page.tsx in order to be recognized as routing page.
 
-6. Various Saniors with routing functions:
+## Various Saniors with routing functions:
 
-   1. To case a no page (/)
+1.  To case a no page (/)
 
-      - The URL will be localhost:3000
-      - The page.tsx should be inside app directory
+    - The URL will be localhost:3000
+    - The page.tsx should be inside app directory
 
-   2. To case a simple page (/about, /profile)
+2.  To case a simple page (/about, /profile)
 
-      - The URL will be `localhost:3000/about`
-      - The page.tsx should be inside `app/about` or `app/profile` directory
+    - The URL will be `localhost:3000/about`
+    - The page.tsx should be inside `app/about` or `app/profile` directory
 
-   3. To case a nested page (/blog/first, /blog/Second only)
+3.  To case a nested page (/blog/first, /blog/Second only)
 
-      - The URL will be `localhost:3000/blog/first`
-      - The page.tsx should be inside `app/blog/first` directory
+    - The URL will be `localhost:3000/blog/first`
+    - The page.tsx should be inside `app/blog/first` directory
 
-   4. To case a dynamic page (/products/1 to /products/100) &rarr; <mark>**_[Dynamic Routing]_**</mark>
+4.  To case a dynamic page (/products/1 to /products/100) &rarr; <mark>**_[Dynamic Routing]_**</mark>
 
-      - This will help us in complex applications in which we requires 100s and 1000s of page and creating each one will be impossible
-      - The URL will be `localhost:3000/products/1` or `localhost:3000/products/100`. It will work with infine value
-      - The page.tsx should be inside `app/products/[productsDetailsById]` directory. '[]' help us to make the dynamic routing possible with the defined product id.
-      - In order to extract the parameters from the website/URL, we need to add params in the export function and use it with the ID name. Such as :
-        ```typescript
-        export default function products({ params }) {
-          return params.productsDetailsById;
+    - This will help us in complex applications in which we requires 100s and 1000s of page and creating each one will be impossible
+    - The URL will be `localhost:3000/products/1` or `localhost:3000/products/100`. It will work with infine value
+    - The page.tsx should be inside `app/products/[productsDetailsById]` directory. '[]' help us to make the dynamic routing possible with the defined product id.
+    - In order to extract the parameters from the website/URL, we need to add params in the export function and use it with the ID name. Such as :
+      ```typescript
+      export default function products({ params }) {
+        return params.productsDetailsById;
+      }
+      ```
+
+5.  To case a nested dynamic pages (/products/1/review/1 to products/100/review/100)
+
+    - This is the same thing as dynamic pages but with nested parameters.
+    - The URL will be `localhost:3000/products/1/reviews/1` to `localhost:3000/products/100/reviews/100`
+    - The page.tsx should be inside `app/products/[productsDetailsById]/reviews/[reviewById]` directory.
+    - In order to extract the parameters from the website/URL, we need to add params in the export function and use it with the ID name. Such as for `products/1/reviews/1`:
+
+      ```typescript
+      export default function products({ params }) {
+        return (
+          <>
+            <p>
+              Review ID: {params.reviewById}
+              <br />
+              Product ID: {params.productsDetailsById}
+            </p>
+          </>
+        );
+      }
+      ```
+
+6.  To case a multiple nested dynamic page (/docs/feature1, /docs/feature100/concept1/...(It could anything depending upon the requirements)) &rarr; <mark>**_[Catch-all-segments]_**</mark>
+
+    - In this case, we have multiple dynamics pages. Problem is : this could a lot of different dynamic folders.
+    - The URLs will be like:
+      1. `localhost:3000/docs/feature1`
+      2. `localhost:3000/docs/feature100/concept1/...`
+      3. `localhost:3000/docs/feature100/concept100/example1/...`
+      4. `localhost:3000/docs/feature100/concept100/example100/laptop1/...`
+    - The page.tsx should be inside a new folder **_slug_** with a spread. Therefore, dir will be like `/app/docs/[...slug]`.
+    - This way we can add multiple nested dynamic pages within one dynamic folder and a dashboard on the hand.
+    - In order to extract the parameters from the website/URL, we need to add params in the export function and use it with a arrary of string that is `slug`.
+
+      1. Below is example of `/docs/feature1/Concept1` :
+
+         ```typescript
+         export default function docs({
+           params,
+         }: {
+           params: { slug: string[] };
+         }) {
+           return (
+             <>
+               <p>
+                 Feature ID: {params.slug[0]}
+                 Concept ID: {params.slug[1]}
+               </p>
+             </>
+           );
+         }
+         ```
+
+      2. Below is example of `/docs/feature1/Concept1/example1` :
+
+         ```javascript
+         export default function docs({ params }) {
+           return (
+             <>
+               <p>
+                 Feature ID: params.slug[0] // For feature1
+                 <br />
+                 Concept ID: params.slug[1] // For concept1
+                 <br />
+                 Example ID: params.slug[2] // For example1
+               </p>
+             </>
+           );
+         }
+         ```
+
+    - Basically, The `slug` is an array of string that contains all the parameters from the URL.
+
+7.  To customize Not Found (/anything): <mark>**_[notFound() &rarr; Function]_**</mark>
+
+    - The URL will be localhost:3000/anything
+    - The page.tsx should be inside app directory with the name `not-found.tsx`
+    - We can define a 404 feature to the params level as well. Such as, if there is only 30 products and 31 should get 404 error page.
+    - In order to achieve the above scenario, we simply have to create a if-else statement with the condition `params.productById > 30` then implement a bulidin function `notFound();`. For example:
+
+      ```javascript
+      import { notFound } from "next/navigation";
+
+      export default function reviews({ params }: any) {
+        if (params.reviewById > 30) {
+          notFound();
         }
-        ```
 
-   5. To case a nested dynamic pages (/products/1/review/1 to products/100/review/100)
+        return (
+          <>
+            <p> Review ID: {params.reviewById} </p>
+            <p>Product ID: {params.productsDetailsById}</p>
+          </>
+        );
+      }
+      ```
 
-      - This is the same thing as dynamic pages but with nested parameters.
-      - The URL will be `localhost:3000/products/1/reviews/1` to `localhost:3000/products/100/reviews/100`
-      - The page.tsx should be inside `app/products/[productsDetailsById]/reviews/[reviewById]` directory.
-      - In order to extract the parameters from the website/URL, we need to add params in the export function and use it with the ID name. Such as for `products/1/reviews/1`:
+    - The above code will automatically goes to 404 error page if the params is more than 30. Such as `/products/31`.
+    - If we need to customize the 404 page for the product page, then we have to create a `not-found.tsx` inside the `app/products` directory otherwise it will take custom 404 error page defined in `app` directory. demonstrating:
 
-        ```typescript
-        export default function products({ params }) {
-          return (
-            <>
-              <p>
-                Review ID: {params.reviewById}
-                <br />
-                Product ID: {params.productsDetailsById}
-              </p>
-            </>
-          );
-        }
-        ```
+      ```javascript
+      export default function notFound() {
+        return <div>hya unble to find the requested item</div>;
+      }
+      ```
 
-   6. To case a multiple nested dynamic page (/docs/feature1, /docs/feature100/concept1/...(It could anything depending upon the requirements)) &rarr; <mark>**_[Catch-all-segments]_**</mark>
-
-      - In this case, we have multiple dynamics pages. Problem is : this could a lot of different dynamic folders.
-      - The URLs will be like:
-        1. `localhost:3000/docs/feature1`
-        2. `localhost:3000/docs/feature100/concept1/...`
-        3. `localhost:3000/docs/feature100/concept100/example1/...`
-        4. `localhost:3000/docs/feature100/concept100/example100/laptop1/...`
-      - The page.tsx should be inside a new folder **_slug_** with a spread. Therefore, dir will be like `/app/docs/[...slug]`.
-      - This way we can add multiple nested dynamic pages within one dynamic folder and a dashboard on the hand.
-      - In order to extract the parameters from the website/URL, we need to add params in the export function and use it with a arrary of string that is `slug`.
-
-        1. Below is example of `/docs/feature1/Concept1` :
-
-           ```typescript
-           export default function docs({
-             params,
-           }: {
-             params: { slug: string[] };
-           }) {
-             return (
-               <>
-                 <p>
-                   Feature ID: {params.slug[0]}
-                   Concept ID: {params.slug[1]}
-                 </p>
-               </>
-             );
-           }
-           ```
-
-        2. Below is example of `/docs/feature1/Concept1/example1` :
-
-           ```javascript
-           export default function docs({ params }) {
-             return (
-               <>
-                 <p>
-                   Feature ID: params.slug[0] // For feature1
-                   <br />
-                   Concept ID: params.slug[1] // For concept1
-                   <br />
-                   Example ID: params.slug[2] // For example1
-                 </p>
-               </>
-             );
-           }
-           ```
-
-      - Basically, The `slug` is an array of string that contains all the parameters from the URL.
-
-   7. To customize Not Found (/anything): <mark>**_[notFound() &rarr; Function]_**</mark>
-
-      - The URL will be localhost:3000/anything
-      - The page.tsx should be inside app directory with the name `not-found.tsx`
-      - We can define a 404 feature to the params level as well. Such as, if there is only 30 products and 31 should get 404 error page.
-      - In order to achieve the above scenario, we simply have to create a if-else statement with the condition `params.productById > 30` then implement a bulidin function `notFound();`. For example:
-
-        ```javascript
-        import { notFound } from "next/navigation";
-
-        export default function reviews({ params }: any) {
-          if (params.reviewById > 30) {
-            notFound();
-          }
-
-          return (
-            <>
-              <p> Review ID: {params.reviewById} </p>
-              <p>Product ID: {params.productsDetailsById}</p>
-            </>
-          );
-        }
-        ```
-
-      - The above code will automatically goes to 404 error page if the params is more than 30. Such as `/products/31`.
-      - If we need to customize the 404 page for the product page, then we have to create a `not-found.tsx` inside the `app/products` directory otherwise it will take custom 404 error page defined in `app` directory. demonstrating:
-
-        ```javascript
-        export default function notFound() {
-          return <div>hya unble to find the requested item</div>;
-        }
-        ```
-
-7. Routing Conventions: [CONTI.]
+8.  Routing Conventions: [CONTI.]
 
 - In order to create a private folder inside the app directory and should be ignored by the routing, we can simply add `_` before the folder name. Such as `_lib`
 - In order to create a routing group, we simply add the folder name inside. `()` . Such as `(auth)` and that will convert the path from `auth/register` &rarr; `/register`
 
-8. **_Linking_**:
+## **_Linking_**:
 
 - We have to use `Link` component which should be imported from `next/link` in order to link one component to another which enables client side navigation to the different pages. Demo:
 
@@ -234,7 +234,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 
   **Note:** UsePathname function is only available in client components.
 
-8. **Layout**:
+## **Layout**:
 
 - It is auto generated file in nextjs that help us to set a parmanent section within the website such as header, footer, etc.
 - The filename is `/app/layout.tsx` &rarr; The is root layout of the website.
@@ -325,7 +325,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 
 - We can use both `template.tsx` and `layout.tsx` together but keep in mind that `Layout.tsx` will render first.
 
-8. **_Loading_**:
+## **_Loading_ Component**:
 
 - It is a file where we can add loading animations to make the user understand the loading is happening and the requested content will be loaded soon
 - We need a exported default `Loading()` function in `Loading.tsx`.
@@ -336,7 +336,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
   }
   ```
 
-9. <mark>**_MetaData_**</mark> : [title, description]
+## **_MetaData_** : [title, description]
 
 - Nextjs allows a metadata API to configure the metadata object in order to ensuring the visibility of the data in SEOs
 - We can add the metadata in the `page.tsx` file with the following code:
@@ -392,7 +392,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
   };
   ```
 
-10. <mark>**_Error Function:_**</mark>
+## **_Error Function:_**
 
 - This a type of function/feature that helps us in handling errors.
 - It will mostly helps in production environments.
@@ -519,7 +519,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 
     and If we move the `error.tsx` file into review component, it will be automatically set the scope of the error handler to the review component and only review component will re-render other components such as features will be remain visible in the UI and in working state.
 
-11. <mark>**_Parallel Routes:_**</mark> (**_Advance Routing Concepts_**)
+## **_Parallel Routes:_** (**_Advance Routing Concepts_**)
 
 - This is a advanced routing with help to render multiple pages within the same layout.
 - This is used when we need two or more components to be rendered in a single page and to make sure that the components are being rendered individually without any dependencies on other components. For example:
@@ -672,7 +672,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
     }
     ```
 
-12. <mark>**_Intercepting Routes_**</mark> (**_Advance Routing Concepts_**)
+## **_Intercepting Routes_** (**_Advance Routing Concepts_**)
 
 - Intercepting routes are used to perform some action before rendering the component.
 - It helps in intercept or stop the default routing behavior and present a alternate UI to make the UI interactive while the URL will be the same but the UI will changed. But the twist is when the user reload the page the default behavior and UI will be replaced with the Interactive Behavior.
@@ -732,7 +732,96 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
      - That's why, this is called as root level.
      - There is no additional code required to handle intercepting routes.
 
-
 <hr/>
 <span style="font-size:20px;"><strong>Practical Example for Parallel Intercepting Routes Will Be Found in `Gallery` Directory</strong></span>
 <hr/>
+
+## Route Handlers:
+
+### Basics:
+
+- It is a custom request handlers for our routes. Such as `GET`, `POST`, `PUT`, `DELETE`.
+- We can also perform CRUD operations using it.
+- Unlike page routes, it will allow us to create RESTful endpoints.
+- No requirements of a creating and configuring a separate server.
+- It is also great for making external API requests.
+- Data fatching is very simple and easy using route handlers.
+- It runs server-side, ensuring that all the sensitive information are in place.
+- For example:
+
+  1. Create a file named `route.ts` which is a name convention for route handlers.
+  2. Add a export async function with the same of the route verb i.e. `GET` and `POST` respectively.
+  3. Return the JS response object with necessary information.
+  4. Filepath will be `app/dirName/route.ts` and the url will be `localhost:3000/dirName`
+  5. Demonstrate the simple `route.ts`
+
+     ```javascript
+     export async function GET() {
+       return new Response("Hello World!");
+     }
+     ```
+
+- <mark>**IMPORTANT points:**</mark>
+  - Similar to page routes, route handlers will also be able to design in the folder and nested folders
+  - To avoid conflices between `page.tsx` and `route.ts`, we can create a separate folder such as `API` to separate the routes from page.
+
+### Usages: (GET)
+
+- There is no change in `GET()` behavior. Here are the demonstration for same.
+- The URL for get request will be `localhost:3000/data`
+- Getting data in response object
+
+  ```javascript
+  import { dataArray } from "./data";
+
+  export async function GET() {
+    return new Response.json(dataArray);
+  }
+  ```
+
+### Usages: (POST):
+
+- In order to take data using `POST()` request, we will have to create a new method with the name `POST()` with the arguments _request_
+- The URL for post request will be `localhost:3000/data`
+- Here is the demonstration for same:
+
+  ```javascript
+  // Let say data = [{name: 'John', age:13}]
+  // Request will be like data = {name: 'firstName', age:NaN}
+
+  export async function POST(request: Request) {
+    const dataFromPost = await request.json();
+    const data = {
+      name: dataFromPost.name,
+      age: dataFromPost.age,
+    };
+    data.push(data);
+    return new Response(JSON.stringify(data), {
+      headers: {
+        "Content-Type": "application/json",,
+      },
+      status: 201,
+    });
+  }
+  /* New value for data is
+  data = [
+    {
+      name: "John",
+      age: 13,
+    },
+    {
+      name: "firstName",
+      age: NaN,
+    },
+  ];
+  */
+  ```
+
+### Usages: (PATCH):
+
+- In order to take data using `PATCH()` request, we will have to create a new method with the same name `PATCH()` with the two arguments:
+  1. `request`: the request arguments is similar as in the `POST()` method.
+  2. `context`: This argument {}
+- The URL for get request will be `localhost:3000/data/:name`
+- Similarly to the page routes, we will create a dynamic route with `[id]`.
+- Here is the demonstration for same:
