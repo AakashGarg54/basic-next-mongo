@@ -733,7 +733,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
      - There is no additional code required to handle intercepting routes.
 
 <hr/>
-<span style="font-size:20px;"><strong>Practical Example for Parallel Intercepting Routes Will Be Found in `Gallery` Directory</strong></span>
+<span style="font-size:18px;"><strong>Practical Example for Parallel Intercepting Routes Will Be Found in `Gallery` Directory</strong></span>
 <hr/>
 
 ## Route Handlers:
@@ -1080,7 +1080,9 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
      import { NextResponse, type NextRequest } from "next/server";
 
      export function middleware(request: NextRequest) {
-      if (request.nextUrl.pathname === "/profile") {
-       return new NextResponse.redirect("/", request.url);
+       if (request.nextUrl.pathname === "/profile") {
+         return new NextResponse.redirect("/", request.url);
+       }
      }
      ```
+
