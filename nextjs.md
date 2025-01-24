@@ -779,6 +779,18 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
   }
   ```
 
+- In case, the URL for get request using ID will be `localhost:3000/data/:id`
+- Similarly to the page routes, we will create a dynamic route with `[id]`.
+- As we defined `params` in the page routes, similarly, we defined in this.
+- Here is the demonstration for same:
+
+  ```javascript
+  export async function GET(_request:Request, { params}:{ params: {id}}) {
+    const dataFromId= data.find((data) => data.id === parseInt(params.id));
+    }
+    retrun Response.json(dataFromPostRequest);
+  ```
+
 ### Usages: (POST):
 
 - In order to take data using `POST()` request, we will have to create a new method with the name `POST()` with the arguments _request_
@@ -786,14 +798,14 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 - Here is the demonstration for same:
 
   ```javascript
-  // Let say data = [{name: 'John', age:13}]
-  // Request will be like data = {name: 'firstName', age:NaN}
+  // Let say data = [{name: 'John', Id:13}]
+  // Request will be like data = {name: 'firstName', Id:NaN}
 
   export async function POST(request: Request) {
-    const dataFromPost = await request.json();
+    const dataFromPostRequest = await request.json();
     const data = {
-      name: dataFromPost.name,
-      age: dataFromPost.age,
+      name: dataFromPostRequest.name,
+      Id: dataFromPostRequest.Id,
     };
     data.push(data);
     return new Response(JSON.stringify(data), {
@@ -807,11 +819,11 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
   data = [
     {
       name: "John",
-      age: 13,
+      Id: 13,
     },
     {
       name: "firstName",
-      age: NaN,
+      Id: NaN,
     },
   ];
   */
@@ -821,7 +833,222 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 
 - In order to take data using `PATCH()` request, we will have to create a new method with the same name `PATCH()` with the two arguments:
   1. `request`: the request arguments is similar as in the `POST()` method.
-  2. `context`: This argument {}
-- The URL for get request will be `localhost:3000/data/:name`
-- Similarly to the page routes, we will create a dynamic route with `[id]`.
-- Here is the demonstration for same:
+  2. `context`: This argument contains the value of params that we pass into the URL.
+- In case, the URL for get request using ID will be `localhost:3000/data/:id`
+- Similarly to the `GET()` method with parameters, we will define the same in the `PATCH()` method as well
+- Here is the demonstration for the same:
+
+  ```javascript
+  export async function PATCH(
+    request: Request,
+    { params }: { params: { id: string } }
+  ) {
+    const body = await request.json();
+    const { text } = body;
+    const dataFromId = data.findIndex(
+      (data) => data.id === parseInt(params.id)
+    );
+    data[dataFromId].text = text;
+    return new Response.json(data[dataFromId]);
+  }
+  ```
+
+### Usages: (DELETE):
+
+- In order to take data using `DELETE()` request, we will have to create a new method with the same name `DELETE()` with the two arguments:
+  1. `request`: the request arguments is similar as in the `POST()` method.
+  2. `context`: This argument contains the value of params that we pass into the URL.
+- In case, the URL for get request using ID will be `localhost:3000/data/:id`
+- Here is the demonstration for the same:
+
+  ```javascript
+  export async function PATCH(
+    request: Request,
+    { params }: { params: { id: string } }
+  ) {
+    const dataFromId = data.findIndex(
+      (data) => data.id === parseInt(params.id)
+    );
+    const deletedData = data[dataFromId];
+    data.splice(dataFromId, 1);
+    return Response.json(deletedData);
+  }
+  ```
+
+### URL Query Parameters using type <mark>**NextRequest**</mark>:
+
+- In order to filter the something from data, such as if we quering something from the get request.
+- In case, the URL for get request using ID will be `localhost:3000/data?query=abc`
+- This will search abc from the returned data
+- Here is the demonstration for the same:
+
+  ```javascript
+  //URL: http://localhost:3000/data?query=abc
+
+  import { type NextRequest } from "Next/server";
+
+  export async function GET(request: NextRequest) {
+    const searchParams = request.nexturl.searchParams; // list of search parameters
+    const query = searchParams.get("query"); // Here we defined query.
+    const filteredData = query
+      ? data.filter((data) => data.text.includes(query))
+      : data;
+    return new Response.json(filteredData);
+  }
+  ```
+
+### Headers (Request):
+
+- It is basically the list of the metadata that a request creator sends to the server.
+- For example:
+  1. **User-Agent**: which identifies the browser and operating system that is sending the request.
+  2. **Accpect**: This is the type of content that client can process
+  3. **Authorization**: Used by the client to authenticate itself with the server
+- Here is the example for authorization:
+
+  1. Using `NextRequest` from `Next/server`
+
+     ```javascript
+     import { type NextRequest } from "Next/server";
+
+     export async function GET(request: NextRequest) {
+       const requestHeaders = new Headers(request.headers);
+       console.log(requestHeaders.get("Authorization"));
+       return new Response("Profile is verified");
+     }
+     ```
+
+  2. Using `headers` from `next/headers`
+
+     ```javascript
+     import { headers } from "next/headers";
+
+     export async function GET(request: NextRequest) {
+       const requestHeadersList = headers();
+
+       console.log(requestHeadersList.get("Authorization"));
+
+       return new Response("Profile is verified");
+     }
+     ```
+
+### Headers (Response):
+
+- It is basically the list of the metadata that a server sends to the client.
+- For example:
+  - **Content-Type**: It indicates the mediatype of the response from the server. It tells the browser which content we have to render to the browser such as text/plain, text/HTML for html documents, application/JSON for JSON data, etc.
+- For example:
+
+  1. Case 1: Here the content-type will be `text/plain` as default one.
+
+     - Input will be:
+
+       ```javascript
+       export async function GET() {
+         return new Response("<h1>Profile is verified</h1>");
+       }
+       ```
+
+     - Output will be a plain text string with the text as `<h1>Profile is verified</h1>`
+
+  2. Case 2: Here the content-type will be `text/HTML` which will defined in the response body as a arguments
+
+     - Input will be:
+
+       ```javascript
+       export async function GET() {
+         return new Response("<h1>Profile is verified</h1>", {
+           headers: {
+             "Content-Type": "text/html",
+           },
+         });
+       }
+       ```
+
+     - Output will be a HTML element with the heading as `Profile is verified`
+
+### Cookies:
+
+- Cookies are the small piece of data that a server sends to the client.
+- The browser saves the cookies and sends them back to same server for later requests.
+- This will help in managing the user-sessions.
+- Uses of Cookies:
+
+  1. Sessions management like login and logout
+  2. Personization like user preferences or theme
+  3. Tracking like recording and analyzing user behavior
+
+- For example:
+
+  1. Using `set-cookies` function deinfed in header body
+
+     ```javascript
+     export async function GET() {
+       return new Response("<h1>Profile is verified</h1>", {
+         headers: {
+           "Content-Type": "text/html",
+           "Set-Cookie": "theme=dark",
+         },
+       });
+     }
+     ```
+
+  2. Using `cookies` from `next/headers`
+
+     ```javascript
+     import { headers, cookies } from "next/headers";
+
+     export async function GET() {
+       cookies().set("theme", "dark");
+
+       return new Response("<h1>Profile is verified</h1>", {
+         headers: {
+           "Content-Type": "text/html",
+         },
+       });
+     }
+     ```
+
+- Now the cookies has been set to `{"name": "theme", "value": "dark"}`
+- In order to get the cookie from the browser:
+
+  1. Using `NextRequest` from `Next/server`
+
+     ```javascript
+     import { type NextRequest } from "next/server";
+
+     export async function GET(request: NextRequest) {
+       const theme = request.cookies("theme"); // this needs a cookies to get cookies.
+
+       return new Response("<h1>Profile is verified</h1>", {
+         headers: {
+           "Content-Type": "text/html",
+           "Set-Cookie": "theme=dark",
+         },
+       });
+     }
+     ```
+
+  2. Using `cookies` from `next/headers`
+
+     ```javascript
+     import { headers, cookies } from "next/headers";
+
+     export async function GET() {
+       const theme = cookies().get("theme"); // this needs a cookies to get cookies.
+
+       return new Response("<h1>Profile is verified</h1>", {
+         headers: {
+           "Content-Type": "text/html",
+         },
+       });
+     }
+     ```
+
+### Caching:
+
+- Route Handler are cached by default when using GET methods with the response object in Next.js.
+- Methods that opt-out caching :
+  1. Dynamic mode in Segment Config Option: Define 
+  
+  2. 
