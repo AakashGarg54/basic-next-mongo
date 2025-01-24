@@ -1049,6 +1049,38 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 
 - Route Handler are cached by default when using GET methods with the response object in Next.js.
 - Methods that opt-out caching :
-  1. Dynamic mode in Segment Config Option: Define 
-  
-  2. 
+  1. Dynamic mode in Segment Config Option. Just defie a exporting variable dynamic and set it's value to "force-dynamic". `export const dynamic = 'force-dynamic'` at the top of the page/route that you want to have no-cache.
+  2. Using the Request object with the GET method
+  3. Employing dynamic function such as headers() or cookies()
+  4. Using HTTP mehtod otherthen GET method.
+
+### Middleware:
+
+- It is a powerful feature in Next.js that allows you to control the flow of requests and responses within the API.
+- It is used to Set a global level i.e. outside to the app folder
+- It is used to enhance the features like _**redirecting, URL rewriting, authorization, headers and cookies management**_ and more.
+- We can active it in certain paths and situations
+- Two main approaches to set the custom middleware:
+
+  1. Custom matcher config
+
+     ```javascript
+     import { NextResponse, type NextRequest } from "next/server";
+
+     export function middleware(request: NextRequest) {
+       return new NextResponse.redirect("/", request.url);
+     }
+
+     export const config = { matcher: "/profle" };
+     ```
+
+  2. Conditional statements
+
+     ```javascript
+     import { NextResponse, type NextRequest } from "next/server";
+
+     export function middleware(request: NextRequest) {
+      if (request.nextUrl.pathname === "/profile") {
+       return new NextResponse.redirect("/", request.url);
+     }
+     ```
