@@ -1,4 +1,4 @@
-Source : [Youtube](https://www.youtube.com/watch?v=7xVWvL-37EE&list=PLC3y8-rFHvwjOKd6gdf4QtV1uYNiQnruI&index=23&ab_channel=Codevolution "Visit Youtube")
+Source : [Youtube](https://www.youtube.com/watch?v=Ou2IAs7W1Ig&list=PLC3y8-rFHvwjOKd6gdf4QtV1uYNiQnruI&index=58 "Visit Youtube")
 
 CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overlays/modal-dialogs)
 
@@ -1099,9 +1099,10 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 - We don't want to make the client side bundle heavier which leads to performance issues on client side.
 - Therefore, it's crucial to keep the server side bundle separate with the client side bundle
 - Provide a Build-time error if developers accidentally import one of these modules into client component.
-- 
+- In order to protect our code and not to put server side components to the client side, we use a separate lierary package named `server-only` and importing it into the component which we want to be server side only.
+- **_Note:_** We can also use a client component within a server-side component by making a client component (using `use client` directive) a separate component outside the app folder and invoking it directly to the server component. This is also called a **Third party integration**.
 
-## Client Componets:
+### Client Componets:
 
 - Best used for the following behaviours:
   1. Adding interactivity
