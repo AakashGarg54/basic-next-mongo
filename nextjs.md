@@ -1086,3 +1086,26 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
      }
      ```
 
+## Server and Client Components:
+
+### Server Components:
+
+- Best used for the following behaviours:
+  1. Fetching the data from the server
+  2. Directly accessing the backend resources.
+  3. Protecting sensitive information
+  4. Keeping large dependencies on server-side, which will reduce the client-side javascript.
+- Certain code are meant to be only for server-side not the client such as database queries and API keys and other business logics.
+- We don't want to make the client side bundle heavier which leads to performance issues on client side.
+- Therefore, it's crucial to keep the server side bundle separate with the client side bundle
+- Provide a Build-time error if developers accidentally import one of these modules into client component.
+- 
+
+## Client Componets:
+
+- Best used for the following behaviours:
+  1. Adding interactivity
+  2. Handling event listeners (such as onClick() and onChange())
+  3. Managing state and lifecycle effects (using hooks like useState(), useEffect(), etc.)
+  4. Using browser-specific APIs and functionality
+  5. Using custom hooks.
