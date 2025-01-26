@@ -1099,7 +1099,7 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
 - We don't want to make the client side bundle heavier which leads to performance issues on client side.
 - Therefore, it's crucial to keep the server side bundle separate with the client side bundle
 - Provide a Build-time error if developers accidentally import one of these modules into client component.
-- In order to protect our code and not to put server side components to the client side, we use a separate lierary package named `server-only` and importing it into the component which we want to be server side only.
+- In order to protect our code and not to put server side components to the client side, we use a separate lierary package named `server-only` and importing it into the component which we want to be server side only. `import "server-only"`
 - **_Note:_** We can also use a client component within a server-side component by making a client component (using `use client` directive) a separate component outside the app folder and invoking it directly to the server component. This is also called a **Third party integration**.
 
 ### Client Componets:
@@ -1110,3 +1110,43 @@ CSS used : [Tailwind.CSS](https://tailwindui.com/components/application-ui/overl
   3. Managing state and lifecycle effects (using hooks like useState(), useEffect(), etc.)
   4. Using browser-specific APIs and functionality
   5. Using custom hooks.
+- It only interact with browser specific functionality like DOM and localstorage
+- In order to make any component is rendered only at the client side components, we use a separate liberary package named `client-only` and importing it into the component which we want to be client side only. `import "client-only"`
+- It's recommended to position these client components lower in your component tree
+- Place Client Component at the bottom of your component tree so that it won't effect any child components.
+
+## DataFetching:
+
+### Basics:
+
+- NextJS used React Server Component for data fetching.
+- This is because Server Component has the access to the filesystem and databases directly
+- It minimizes the use of the Client Component
+- DataFetching in next is pretty simple and straightforward by using async-await with `fetch` method.
+- For example :
+  ```javascript
+  export default async function userName() {
+    const responseData = await fetch("URL");
+    const data = responseData.json();
+    return data;
+  }
+  ```
+
+### Loading/Delay handling:
+
+- This pretty straightforward method as defined above.
+- Just create a `loading.tsx` file in the directory.
+
+### Error Handling:
+
+- This pretty straightforward method as defined above.
+- Just create a `error.tsx` file in the directory.
+
+## Caching Data:
+
+- By default, Next.js is automatically cached data returned from the `fetch`   method
+- It is a server-side cache that stroages the data fetches across incoming server requests and deployments
+-  It will improves the performance of the application and reduce the amount of refetching the data again and again from the APIs calls. 
+- In order to opt-out for caching data, we just need to pass an another argument to the `fetch` method `{cache: "no-store"}`
+- ***Note:*** To make sure all the subsequent fetch requests are cached, we must define the `no-store` option at the bottom of the page.tsx.
+- By default, NextJS will cache the fetch() requests the occurs before the dynamic functions (cookies(), headers(), searchParams()). After the functions no data/request will be cached
