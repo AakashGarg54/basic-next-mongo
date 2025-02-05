@@ -1,0 +1,28 @@
+{
+    "todoData": [
+        {
+            "id": "1",
+            "title": "Simplilearn1",
+            "desc": "Have completed the three-course of Simplilearn1",
+            "time": "08:00",
+            "date": "2021-06-07",
+            "active": true
+        },
+        {
+            "id": "2",
+            "title": "Simplilearn2",
+            "desc": "Have completed the three-course of Simplilearn2",
+            "time": "08:00",
+            "date": "2021-06-07",
+            "active": false
+        },
+        {
+            "id": "3",
+            "title": "Simplilearn3",
+            "desc": "Have completed the three-course of Simplilearn3",
+            "time": "08:00",
+            "date": "2021-06-07",
+            "active": false
+        }
+    ]
+}
