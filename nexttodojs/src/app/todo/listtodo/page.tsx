@@ -1,22 +1,38 @@
 "use client"
 
-import { todo } from "@/utils/todoType";
-import todoData from "@/data/todo.json";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function listTodo() {
+
+    const [todoData, settodoData] = useState([])
+
+    useEffect(() => {
+
+        const getData = async () => {
+
+            const todoDataFromApi = await fetch("/api/listtodo")
+                .then(response => response.json())
+            settodoData(todoDataFromApi.todoData)
+            console.log(todoDataFromApi.todoData);
+
+        };
+        getData();
+    }, [])
+
+
     return (
         <>
             <div className="container" style={{ minHeight: "77.8vh" }}>
                 <h1 className="text-center text-3xl">listTodo</h1>
-                {todoData.todoData.length === 0 ? (
+                {todoData.length === 0 ? (
                     <div className="card">
                         <div className="card-body">
                             There is <strong> No </strong> Todos to display.
                         </div>
                     </div>
                 ) : (
-                    todoData.todoData.map((i) => {
+                    todoData.map((i: any) => {
                         return (
                             <div key={i.id} className="bg-white shadow-lg rounded-lg overflow-hidden">
                                 <div className="p-4">
